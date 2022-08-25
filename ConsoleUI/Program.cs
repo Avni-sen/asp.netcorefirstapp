@@ -5,7 +5,7 @@ using System;
 
 namespace ConsoleUI
 {
-    internal class Program
+    public class Program
     {
         //SOLİD
         static void Main(string[] args)
@@ -15,11 +15,18 @@ namespace ConsoleUI
             //kendi yazdığımız verilerden gerçek bir veritabanına bağlandık ve EntityFramework ile bunu sağladık.
 
 
-            ProductManager productManager = new ProductManager(new EfProductDal());
+            //ProductManager productManager = new ProductManager(new EfProductDal());
 
-            foreach (var product in productManager.GetAllByCategoryId(1))
+            //foreach (var product in productManager.GetAllByCategoryId(1))
+            //{
+            //    Console.WriteLine(product.ProductName);
+            //}
+
+            CustomerManager customerManager = new CustomerManager(new EfCustomerDal());
+
+            foreach (var customer in customerManager.GetByCity("London"))
             {
-                Console.WriteLine(product.ProductName);
+                Console.WriteLine(customer.ContactName);
             }
         }
     }

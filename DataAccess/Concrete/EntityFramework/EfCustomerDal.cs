@@ -11,50 +11,50 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Concrete.EntityFramework
 {
-    public class EfCategoryDal : ICategoryDal
+    public class EfCustomerDal : ICustomerDal
     {
-        public void Add(Category entity)
+        public void Add(Customer entity)
         {
             using (NorthwindContext context = new())
             {
-                var addedCategory = context.Entry(entity);
-                addedCategory.State = EntityState.Added;
+                var addedCustomer = context.Entry(entity);
+                addedCustomer.State = EntityState.Added;
                 context.SaveChanges();
             }
         }
 
-        public void Delete(Category entity)
+        public void Delete(Customer entity)
         {
             using (NorthwindContext context = new())
             {
-                var deletedCategory = context.Entry(entity);
-                deletedCategory.State = EntityState.Deleted;
+                var deletedCustomer = context.Entry(entity);
+                deletedCustomer.State = EntityState.Deleted;
                 context.SaveChanges();
             }
         }
 
-        public Category Get(Expression<Func<Category, bool>> filter)
+        public Customer Get(Expression<Func<Customer, bool>> filter)
         {
             using (NorthwindContext context = new())
             {
-                return context.Set<Category>().SingleOrDefault(filter);
+                return context.Set<Customer>().SingleOrDefault(filter);
             }
         }
 
-        public List<Category> GetAll(Expression<Func<Category, bool>> filter = null)
+        public List<Customer> GetAll(Expression<Func<Customer, bool>> filter = null)
         {
             using (NorthwindContext context = new())
             {
-                return filter != null ? context.Set<Category>().Where(filter).ToList() : context.Set<Category>().ToList();
+                return filter != null ? context.Set<Customer>().Where(filter).ToList() : context.Set<Customer>().ToList();
             }
         }
 
-        public void Update(Category entity)
+        public void Update(Customer entity)
         {
             using (NorthwindContext context = new())
             {
-                var deletedCategory = context.Entry(entity);
-                deletedCategory.State = EntityState.Modified;
+                var updatedCustomer = context.Entry(entity);
+                updatedCustomer.State = EntityState.Modified;
                 context.SaveChanges();
             }
         }
