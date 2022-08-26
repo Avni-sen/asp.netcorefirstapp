@@ -16,6 +16,7 @@ namespace ConsoleUI
 
 
             //CustomerTest();
+
             ProductTest();
 
             //CategoryTest();
