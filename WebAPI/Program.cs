@@ -24,6 +24,7 @@ namespace WebAPI
             Host.CreateDefaultBuilder(args)
             //UseServiceProviderFactory ekledik
             //arkadaþým senin IoC yapýn var ama sen bunu býrakta Autofac i kullan IoC için.
+            //ilerde bir gün autofac i deðiþtirmek istersek sadece AutofacServiceProviderFactory ve AutofacBusinessModule() bunu deðiþtireceðiz .
             .UseServiceProviderFactory(new AutofacServiceProviderFactory())
             .ConfigureContainer<ContainerBuilder>(builder =>
             {

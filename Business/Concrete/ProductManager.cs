@@ -1,11 +1,16 @@
 ﻿using Business.Abstract;
 using Business.Constants;
+using Business.ValidationRules.FluentValidation;
+using Core.Aspect.Autofac.Validation;
+using Core.CrossCuttingConcerns.Validation;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
 using Entities.DTOs;
+using FluentValidation;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,22 +27,21 @@ namespace Business.Concrete
             _productDal = productDal;
         }
 
+        [ValidationAspect(typeof(ProductValidator))]
         public IResult Add(Product product)
         {
-            //business code
-            if (product.ProductName.Length < 2)
-            {
-                //magic string bunları burada yazmak sıkıntı olabilir buna çözüm için business katmanında constants(sabitler) klasörü oluşturduk.
-                //artık hatalarımızı ya da vermemiz gereken mesajları Messages üzerinden kontrol edebiliriz.
-                return new ErrorResult(Messages.ProductNameInvalid);
-            }
+            //business code(iş gereksinimlerimize uygunluk)
+            //validation(min kaç karakter max kaç karakter gibi doğrulamalar.)
+            //iki kod türü birbirine karıştırılıyor bunları karıştırmamamız lazım.
+
             _productDal.Add(product);
             return new SuccessResult(Messages.ProductAdded);
+
         }
 
         public IResult Delete(Product product)
         {
-            _productDal.Delete(product); 
+            _productDal.Delete(product);
             return new SuccessResult(Messages.ProductAdded);
         }
 
@@ -58,9 +62,9 @@ namespace Business.Concrete
             return new SuccessDataResult<List<Product>>(_productDal.GetAll(p => p.CategoryId == id), Messages.ProductListedByCategoryId);
         }
 
-        public IDataResult<Product> GetById(int productId) 
+        public IDataResult<Product> GetById(int productId)
         {
-            return new SuccessDataResult<Product>(_productDal.Get(p => p.ProductId == productId) , Messages.ProductListedById);
+            return new SuccessDataResult<Product>(_productDal.Get(p => p.ProductId == productId), Messages.ProductListedById);
         }
 
         public IDataResult<List<Product>> GetByUnitPrice(decimal min, decimal max)
