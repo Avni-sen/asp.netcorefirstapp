@@ -31,11 +31,8 @@ namespace Business.Concrete
                 //artık hatalarımızı ya da vermemiz gereken mesajları Messages üzerinden kontrol edebiliriz.
                 return new ErrorResult(Messages.ProductNameInvalid);
             }
-
             _productDal.Add(product);
-
             return new SuccessResult(Messages.ProductAdded);
-
         }
 
         public IResult Delete(Product product)

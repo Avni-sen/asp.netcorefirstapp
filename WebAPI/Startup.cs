@@ -35,10 +35,9 @@ namespace WebAPI
             //Autofac daha iyi çünkü bize AOP imkaný saðlýyor... ?? 
             //AOP --> 
             services.AddControllers();
-
-            services.AddSingleton<IProductService, ProductManager>();
+            //services.AddSingleton<IProductService, ProductManager>();
             //bunu biz ekledik eðer bir controller da constructor içerisinde IProductService newlenmek istenirse, ProductManager ile newlesin, kullansýn demek.
-            services.AddSingleton<IProductDal, EfProductDal>();
+            //services.AddSingleton<IProductDal, EfProductDal>();
 
 
 

@@ -14,7 +14,7 @@ namespace Core.DataAccess
     public interface IEntityRepository<T> where T:class,IEntity,new()
         //T değerini sınırlandıralım!!
         //T where class demek T için referans tipi olarak class verebiliriz anlamına geliyor.
-        //ve T sadece IEntity tipinde bir parametre alabilir bu şekilde T parametremizi sınırlandırdıl vve 
+        //ve T sadece IEntity tipinde bir parametre alabilir bu şekilde T parametremizi sınırlandırdıl ve 
         //kontrol sağlamış olduk.
 
         //her bir entity nesnemiz için ayrı ayrı dal katmanı oluşturmak yerine tek bir IEntityRepository oluşturup T parametremizi vererek fazla kod yazma yükünden 
