@@ -1,8 +1,10 @@
 ﻿using Business.Abstract;
+using Business.CCS;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
 using Core.Aspect.Autofac.Validation;
 using Core.CrossCuttingConcerns.Validation;
+using Core.Utilities.Business;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
@@ -21,22 +23,40 @@ namespace Business.Concrete
     {
 
         IProductDal _productDal;
+        //EKLEYEMEYİZ!!!
+        //ICategoryDal _categoryDal;
+        //fakat service ekleyebiliriz
+        ICategoryService _categoryService;
 
-        public ProductManager(IProductDal productDal)
+        public ProductManager(IProductDal productDal, ICategoryService categoryService)
         {
             _productDal = productDal;
+            //bir entitymanager kendisi hariç başka dal ı enjekte edemez!!!!!!!!!!!!!!
+            _categoryService = categoryService;
         }
 
-        [ValidationAspect(typeof(ProductValidator))]
+        [ValidationAspect(typeof(ProductValidator))] //typeof ile validator type verdik.
         public IResult Add(Product product)
         {
             //business code(iş gereksinimlerimize uygunluk)
             //validation(min kaç karakter max kaç karakter gibi doğrulamalar.)
             //iki kod türü birbirine karıştırılıyor bunları karıştırmamamız lazım.
 
+
+            //Aynı isimde ürün eklenemez
+            //iş katmanında bir örnek ürün kaydı yapılırken kategoriye 10 üründen fazlası eklenemez.
+            //mevcut kategori sayısı 15 i geçtiyse sisteme yeni ürün eklenemez.
+
+
+            //polymorphism --> çok biçimlilik.
+            IResult result = BusinessRules.Run(CheckIfProductCountOfCategoryCorrect(product), CheckIfProductNameExists(product),CheckIfCategoryCount());
+            //buradaki result kurala uymayanlar demek eğer kurala uymayan varsa onu fonk. geri döndürsün eğer yoksa ekleme işlemini gerçekleştirsin.
+            if (result != null)
+            {
+                return result;
+            }
             _productDal.Add(product);
             return new SuccessResult(Messages.ProductAdded);
-
         }
 
         public IResult Delete(Product product)
@@ -51,7 +71,6 @@ namespace Business.Concrete
             //{
             //    return new ErrorDataResult<List<Product>>(Messages.MaintenanceTime);
             //}
-
             //iş kodları varsa onlar yazılır.
             //bir iş sınıfı başka sınıfları newlemez!!
             return new SuccessDataResult<List<Product>>(_productDal.GetAll(), Messages.ProductListed);
@@ -77,10 +96,54 @@ namespace Business.Concrete
             return new SuccessDataResult<List<ProductDetailDto>>(_productDal.GetProductDetailDtos(), Messages.ProductDetailsDtos);
         }
 
+
+        [ValidationAspect(typeof(ProductValidator))]
         public IResult Update(Product product)
         {
+            if (CheckIfProductCountOfCategoryCorrect(product).Success)
+            {
+                _productDal.Update(product);
+                return new SuccessResult(Messages.ProductUpdated);
+            }
             _productDal.Update(product);
-            return new SuccessDataResult<Product>(Messages.ProductUpdated);
+            return new SuccessResult(Messages.ProductUpdated);
+
+        }
+
+
+        private IResult CheckIfProductCountOfCategoryCorrect(Product product)
+        {
+            //selcet count(*) from Products where categoryId=1 i çalıştırır.Gidip tüm verileri çekmez.
+            var result = _productDal.GetAll(p => p.CategoryId == product.CategoryId).Count;
+            if (result >= 10)
+            {
+                return new ErrorResult(Messages.ProductCountOfCategoryError);
+            }
+            return new SuccessResult();
+        }
+
+
+        private IResult CheckIfProductNameExists(Product product)
+        {
+            //aynı ürün isminden olan varsa eklenemez.any ile böyle bir data var mı yok mu onu kontrol ettik.
+            var result = _productDal.GetAll(p => p.ProductName == product.ProductName).Any();
+            if (result)
+            {
+                return new ErrorResult(Messages.ProductNameAlreadySave);
+            }
+            return new SuccessResult();
+        }
+
+
+        private IResult CheckIfCategoryCount()
+        {
+            //aynı ürün isminden olan varsa eklenemez.any ile böyle bir data var mı yok mu onu kontrol ettik.
+            var result = _categoryService.GetAll().Data.Count();
+            if (result > 15)
+            {
+                return new ErrorResult(Messages.CategoryCounteExceeded);
+            }
+            return new SuccessResult();
         }
     }
 }
