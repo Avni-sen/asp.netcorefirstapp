@@ -35,6 +35,9 @@ namespace Business.Concrete
             _categoryService = categoryService;
         }
 
+
+        //claim --> yetkilendirme...
+
         [ValidationAspect(typeof(ProductValidator))] //typeof ile validator type verdik.
         public IResult Add(Product product)
         {
@@ -46,7 +49,6 @@ namespace Business.Concrete
             //Aynı isimde ürün eklenemez
             //iş katmanında bir örnek ürün kaydı yapılırken kategoriye 10 üründen fazlası eklenemez.
             //mevcut kategori sayısı 15 i geçtiyse sisteme yeni ürün eklenemez.
-
 
             //polymorphism --> çok biçimlilik.
             IResult result = BusinessRules.Run(CheckIfProductCountOfCategoryCorrect(product), CheckIfProductNameExists(product),CheckIfCategoryCount());
