@@ -14,7 +14,7 @@ namespace Core.Utilities.Business
             //logics içine , ile Iresult tipinde istedğimiz kadar değer ekleyebiliyoruz.. --> params sayesinde.
             foreach (var logic in logics)
             {
-                if (logic.Success)
+                if (!logic.Success)
                 {
                     return logic;
                 }

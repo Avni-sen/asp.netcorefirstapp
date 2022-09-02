@@ -1,19 +1,16 @@
 ﻿using Business.Abstract;
 using Business.BusinessAspects.Autofac;
-using Business.CCS;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
+using Core.Aspect.Autofac.Caching;
 using Core.Aspect.Autofac.Validation;
-using Core.CrossCuttingConcerns.Validation;
 using Core.Utilities.Business;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
 using Entities.DTOs;
-using FluentValidation;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -38,8 +35,9 @@ namespace Business.Concrete
 
 
         //claim --> yetkilendirme...
-        [SecuredOperation("admin")]
+        [SecuredOperation("product.add,admin")]
         [ValidationAspect(typeof(ProductValidator))] //typeof ile validator type verdik.
+        [CacheRemoveAspect("IProductService.Get")]
         public IResult Add(Product product)
         {
             //business code(iş gereksinimlerimize uygunluk)
@@ -52,7 +50,7 @@ namespace Business.Concrete
             //mevcut kategori sayısı 15 i geçtiyse sisteme yeni ürün eklenemez.
 
             //polymorphism --> çok biçimlilik.
-            IResult result = BusinessRules.Run(CheckIfProductCountOfCategoryCorrect(product), CheckIfProductNameExists(product),CheckIfCategoryCount());
+            IResult result = BusinessRules.Run(CheckIfProductCountOfCategoryCorrect(product), CheckIfProductNameExists(product), CheckIfCategoryCount());
             //buradaki result kurala uymayanlar demek eğer kurala uymayan varsa onu fonk. geri döndürsün eğer yoksa ekleme işlemini gerçekleştirsin.
             if (result != null)
             {
@@ -68,6 +66,7 @@ namespace Business.Concrete
             return new SuccessResult(Messages.ProductAdded);
         }
 
+        [CacheAspect]
         public IDataResult<List<Product>> GetAll()
         {
             //if (DateTime.Now.Hour == 16)
@@ -84,6 +83,7 @@ namespace Business.Concrete
             return new SuccessDataResult<List<Product>>(_productDal.GetAll(p => p.CategoryId == id), Messages.ProductListedByCategoryId);
         }
 
+        [CacheAspect]
         public IDataResult<Product> GetById(int productId)
         {
             return new SuccessDataResult<Product>(_productDal.Get(p => p.ProductId == productId), Messages.ProductListedById);
@@ -101,6 +101,7 @@ namespace Business.Concrete
 
 
         [ValidationAspect(typeof(ProductValidator))]
+        [CacheRemoveAspect("IProductService.Get")]
         public IResult Update(Product product)
         {
             if (CheckIfProductCountOfCategoryCorrect(product).Success)
