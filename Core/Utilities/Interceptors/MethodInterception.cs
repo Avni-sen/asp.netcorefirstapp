@@ -9,9 +9,6 @@ namespace Core.Utilities.Interceptors
 {
     public abstract class MethodInterception : MethodInterceptionBaseAttribute
     {
-        //her yerde try catch yazmaktansa buradaki kontrolleri kullanmak spagetti kod yazmak yerine kullanılmalı.
-        //invocation : business methodumuz add-update falan
-
         protected virtual void OnBefore(IInvocation invocation) { }
         protected virtual void OnAfter(IInvocation invocation) { }
         protected virtual void OnException(IInvocation invocation, System.Exception e) { }

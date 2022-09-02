@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Core.Utilities.Security.Hashing
 {
-    public static class HashingHelper
+    public class HashingHelper
     {
         //verdiğimiz passwordün hash ini oluşturuyor.
         public static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
@@ -18,8 +18,7 @@ namespace Core.Utilities.Security.Hashing
             }
         }
 
-        //giriş yaparken verilen şifrenin hashlenmiş halinin veritabanındaki bilgi ile eşleşip eşleşmediğini kontrol ettik.
-        public static bool VerifyPasswordHash(string password , byte[] passwordHash, byte[] passwordSalt)
+        public static bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
         {
             using (var hmac = new System.Security.Cryptography.HMACSHA512(passwordSalt))
             {
@@ -32,6 +31,7 @@ namespace Core.Utilities.Security.Hashing
                     }
                 }
             }
+
             return true;
         }
     }

@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Business.BusinessAspects.Autofac;
 using Business.CCS;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
@@ -37,7 +38,7 @@ namespace Business.Concrete
 
 
         //claim --> yetkilendirme...
-
+        [SecuredOperation("admin")]
         [ValidationAspect(typeof(ProductValidator))] //typeof ile validator type verdik.
         public IResult Add(Product product)
         {
