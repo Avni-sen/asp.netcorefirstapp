@@ -1,5 +1,6 @@
 ﻿using Business.Abstract;
 using Business.Constants;
+using Core.Aspect.Autofac.Caching;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using DataAccess.Concrete.EntityFramework;
@@ -22,6 +23,7 @@ namespace Business.Concrete
             _categoryDal = categoryDal;
         }
 
+        [CacheAspect]
         public IDataResult<List<Category>> GetAll()
         {
 

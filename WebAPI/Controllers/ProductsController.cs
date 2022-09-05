@@ -6,6 +6,7 @@ using Entities.Concrete;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace WebAPI.Controllers
 {
@@ -29,6 +30,7 @@ namespace WebAPI.Controllers
         [HttpGet("getall")]
         public IActionResult GetAll()
         {
+            Thread.Sleep(1000);
             //IProductService productService = new ProductManager(new EfProductDal());
             //ProductManager productManager = new ProductManager(new EfProductDal()); ile de aynı şekilde çalışır.
             //Swagger
@@ -46,6 +48,19 @@ namespace WebAPI.Controllers
         public IActionResult GetById(int productId)
         {
             var result = _productService.GetById(productId);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result.Message);
+        }
+
+
+        [HttpGet("getbycategory")]
+        //yukarıda operasyonları isimlendirdik.
+        public IActionResult GetAllByCategoryId(int categoryId)
+        {
+            var result = _productService.GetAllByCategoryId(categoryId);
             if (result.Success)
             {
                 return Ok(result);
