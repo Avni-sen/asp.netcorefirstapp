@@ -35,7 +35,7 @@ namespace Business.Concrete
 
 
         //claim --> yetkilendirme...
-        [SecuredOperation("product.add,admin")]
+       // [SecuredOperation("product.add,admin")]
         [ValidationAspect(typeof(ProductValidator))] //typeof ile validator type verdik.
         [CacheRemoveAspect("IProductService.Get")]
         public IResult Add(Product product)
@@ -50,7 +50,7 @@ namespace Business.Concrete
             //mevcut kategori sayısı 15 i geçtiyse sisteme yeni ürün eklenemez.
 
             //polymorphism --> çok biçimlilik.
-            IResult result = BusinessRules.Run(CheckIfProductCountOfCategoryCorrect(product), CheckIfProductNameExists(product), CheckIfCategoryCount());
+            IResult result = BusinessRules.Run(/*CheckIfProductCountOfCategoryCorrect(product),*/ CheckIfProductNameExists(product)/*CheckIfCategoryCount()*/);
             //buradaki result kurala uymayanlar demek eğer kurala uymayan varsa onu fonk. geri döndürsün eğer yoksa ekleme işlemini gerçekleştirsin.
             if (result != null)
             {
