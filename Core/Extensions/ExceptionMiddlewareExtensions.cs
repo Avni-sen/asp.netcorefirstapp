@@ -9,5 +9,4 @@ namespace Core.Extensions
             app.UseMiddleware<ExceptionMiddleware>();
         }
     }
-
 }

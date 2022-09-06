@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -36,9 +37,18 @@ namespace Core.Extensions
             httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
             string message = "Internal Server Error";
+            IEnumerable<ValidationFailure> errors;
             if (e.GetType() == typeof(ValidationException))
             {
                 message = e.Message;
+                errors = ((ValidationException) e).Errors;
+
+                return httpContext.Response.WriteAsync(new ValitaionErrorDetails
+                {
+                    StatusCode = 400,
+                    Message = message,
+                    Errors = errors
+                }.ToString());
             }
 
             return httpContext.Response.WriteAsync(new ErrorDetails
@@ -48,5 +58,4 @@ namespace Core.Extensions
             }.ToString());
         }
     }
-
 }
